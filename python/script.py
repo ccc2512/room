@@ -7,12 +7,12 @@ from time import strftime
 
 GPIO = webiopi.GPIO
 
-LIGHT = 23 # GPIO pin for LIGHT
+LIGHT = 21 # GPIO pin for LIGHT
 
-HOUR_ON   = 22  # Turn Light ON at 13:00
-HOUR_OFF  = 22  # Turn Light OFF at 14:00
-MIN_ON    = 57
-MIN_OFF   = 59
+HOUR_ON   = 15  # Turn Light ON at 13:00
+HOUR_OFF  = 19  # Turn Light OFF at 14:00
+MIN_ON    = 00
+MIN_OFF   = 26
 celsius_0 = 0,0
 cel_0     = 0,0
 num       = 1
@@ -23,11 +23,11 @@ def setup():
    GPIO.setFunction(LIGHT,GPIO.OUT)
 
    # retrieve current datetime
-   now = datetime.datetime.now()
+   #now = datetime.datetime.now()
    
    # test if we are between ON time and turn the light ON
-   if (((now.hour >= HOUR_ON) and (now.hour <= HOUR_OFF)) and ((now.minute >= MIN_ON) and (now.minute <= MIN_OFF))):
-      GPIO.digitalWrite(LIGHT, GPIO.HIGH)
+   #if (((now.hour >= HOUR_ON) and (now.hour <= HOUR_OFF)) and ((now.minute >= MIN_ON) and (now.minute <= MIN_OFF))):
+   #   GPIO.digitalWrite(LIGHT,GPIO.HIGH)
 
 @webiopi.macro
 def getBMP085Press():
@@ -64,20 +64,20 @@ def fDate():
    now = datetime.datetime.now()
    return "{0}".format(strftime("%d.%m.%Y"))
 
+@webiopi.macro
+def fLight():
+   now = datetime.datetime.now()
+
+   # toggle light ON all days at the correct time
+   if (((now.hour >= HOUR_ON) and (now.minute >= MIN_ON)) and ((now.hour <= HOUR_OFF) and (now.minute < MIN_OFF))):
+      onoff = "ON"
+   else:
+      onoff = "OFF"
+   return onoff
+
 def loop():
    global cel_0
    global num
-   # retrieve current datetime
-   now = datetime.datetime.now()
-   # toggle light ON all days at the correct time
-   if ((now.hour >= HOUR_ON) and (now.minute >= MIN_ON) and (now.second == 0)):
-      if (GPIO.digitalRead(LIGHT) == GPIO.LOW):
-         GPIO.digitalWrite(LIGHT,GPIO.HIGH)
-   # toggle light OFF
-   if ((now.hour >= HOUR_OFF) and (now.minute >= MIN_OFF) and (now.second == 0)):
-      if (GPIO.digitalRead(LIGHT) == GPIO.HIGH):
-         GPIO.digitalWrite(LIGHT,GPIO.LOW)
-
    tmp0 = webiopi.deviceInstance("temp0")
    tmp085       = webiopi.deviceInstance("bmp")
    cnt = 0
@@ -85,6 +85,13 @@ def loop():
    allTemp085   = 0
    allTPress085 = 0
    while cnt<60:
+      # retrieve current datetime
+      now = datetime.datetime.now()
+      # toggle light ON all days at the correct time
+      if (((now.hour >= HOUR_ON) and (now.minute >= MIN_ON)) and ((now.hour <= HOUR_OFF) and (now.minute < MIN_OFF))):
+         GPIO.digitalWrite(LIGHT,GPIO.HIGH)
+      else:
+         GPIO.digitalWrite(LIGHT,GPIO.LOW)
       oneTemp     = tmp0.getCelsius()
       oneTemp085  = tmp085.getCelsius()
       onePress085 = tmp085.getHectoPascal()

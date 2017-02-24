@@ -39,6 +39,17 @@
       function macro_getTmp0_Callback(macro, args, data) {
          $("#Celsius_0").text(data + " °C");
       }
+
+      // Вызов макроса состояния освещения 2 сек.
+      setInterval ("callMacro_fLight()", 2000);{
+      }
+      function callMacro_fLight(){
+        webiopi().callMacro("fLight", [], macro_fLight_Callback);
+      }
+      function macro_fLight_Callback(macro, args, data) {
+         $("#Light").text(data);
+      }
+
       // Вызов макроса изменения времени с интервалом 2 сек.
       setInterval ("callMacro_fTime()", 2000);{
       }
@@ -158,6 +169,20 @@
    </tr>
 </table>
 
+<table border=0 cellspacing=0 cellpadding=0 width=280px align="center">
+   <tr>
+      <td width=50% align="left">
+         <div class="label label-primary norm_text" id="Light" align="center">light</div>        
+      </td>
+      <td width=50% align="right">
+         <!-- <div class="label label-primary norm_text" id="Celsius_0" align="center"></div> -->
+         <div class="label label-primary norm_text" align="center" onClick="OutTempGraph()">
+            <!-- <script type="text/javascript">document.write(Therm)</script>&deg; °C</div> -->
+            <script type="text/javascript">document.write(Therm)</script> °C</div>
+      </td>
+   </tr>
+</table>
+
 <table border=0 cellspacing=0 cellpadding=0 width=100%>
    <tr>
       <td width=10%>&nbsp;&nbsp;&nbsp;</td>
@@ -198,10 +223,10 @@
 <table border=0 cellspacing=0 cellpadding=0 width=280px align="center">
    <tr>
       <td width=50% align="left">
-         <div class="label label-primary norm_text" id="HumiSHT" align="center" onClick="HumiSHTGraph()">humiGraph</div>
+         <div class="label label-primary norm_text" id="HumiSHT" align="center" onClick="HumiSHTGraph()">humi</div>
       </td>
       <td width=50% align="right">
-         <div class="label label-primary norm_text" id="TempSHT" align="center" onClick="TempSHTGraph()">tempGraph</div>
+         <div class="label label-primary norm_text" id="TempSHT" align="center" onClick="TempSHTGraph()">temp</div>
       </td>
    </tr>
    <tr>

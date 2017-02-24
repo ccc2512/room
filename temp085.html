@@ -1,0 +1,41 @@
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>Temp085_graph</title>
+
+   <script 
+      type="text/javascript"
+      src="dygraph-combined-dev.js">
+   </script>
+
+   <!-- ВЫВОД ГРАФИКА НА СТРАНИЦУ -->
+
+   <div 
+      id="graph_temp085"
+      style="width:100%; height:220px;">
+   </div>
+
+   <!-- СКРИПТ ГРАФИКА -->
+
+   <script type="text/javascript">
+      g3 = new Dygraph(
+         document.getElementById("graph_temp085"),
+         "./txt/data_tempBMP085.txt",
+         "DATA,Temperature\n" +
+         "2015-01-01 12:00,15.00\n" +
+         "2015-01-01 12:15,23.50\n" +
+         "2015-01-01 12:30,23.00\n",
+         {
+         	title: '',
+         	legend: 'always',
+         	ylabel: '',
+         	xlabel: '',
+         	rollPeriod: 5,
+         	color: "#0000FF",
+         	showRoller: false,
+		showLabelsOnHighlight: false
+         }
+      );
+   </script>
+</head>
+</html>

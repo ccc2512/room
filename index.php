@@ -198,10 +198,10 @@
 <table border=0 cellspacing=0 cellpadding=0 width=280px align="center">
    <tr>
       <td width=50% align="left">
-         <div class="label label-primary norm_text" id="HumiSHT" align="center" onClick="HumiSHTGraph()">humiSHT</div>
+         <div class="label label-primary norm_text" id="HumiSHT" align="center" onClick="HumiSHTGraph()">humiGraph</div>
       </td>
       <td width=50% align="right">
-         <div class="label label-primary norm_text" id="TempSHT" align="center" onClick="TempSHTGraph()">tempSHT</div>
+         <div class="label label-primary norm_text" id="TempSHT" align="center" onClick="TempSHTGraph()">tempGraph</div>
       </td>
    </tr>
    <tr>

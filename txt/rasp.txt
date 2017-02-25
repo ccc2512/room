@@ -1,0 +1,108 @@
+Raspberry
+
+raspi-config
+startx
+sudo passwd root
+
+pi
+Rasp2016
+
+PIN:
+
+ONEWIRE script.py
+7 - OW (фиолетовый)
+1 - 3.3V (красный)
+
+IRDD
+4 - 5V (серый)
+12 - (GPIO 18) IN (белый)
+25 - GND (черный)
+
+LED (IRDD)
+26 -(GPIO 7) led
+20 - GND
+
+BMP085 (temp press) script.py
+3 - (SDA I2C) (зеленый)
+5 - (SCL I2C) (синий)
+9 - GND (черный)
+
+SHT1x (temp humi)
+1 - 3.3V (белый)
+16 - (GPIO 23) SCK (фиолетовый)
+18 - (GPIO 24) DATA (серый)
+6 - GND (черный)
+
+script.py
+LIGHT = 21 # GPIO pin for LIGHT
+
+crontab
+./ccc/python/sht.sh
+./ccc/python/outtemp.sh
+
+Установка mc
+apt-get install mc
+
+
+cd /etc/interfaces
+sudo nano interfaces
+
+Вместо:
+iface eth0 inet dhcp
+
+Пишем:
+iface eth0 inet static
+address 192.168.1.101
+netmask 255.255.255.0
+network 192.168.1.0
+broadcast 192.168.1.255
+gateway 192.168.1.1
+
+Настройка DNS
+
+/etc/resolv.conf
+дописать
+nameserver 192.168.1.1
+nameserver 8.8.8.8
+
+WEBIOPI
+
+После завершения установки необходимо активировать автозапуск WebIOPi. Автозапуск WebIOPi нужен для того, что бы каждый раз после включения Raspberry Pi не выполнять запуск приложения вручную. Для этого выполняем команду:
+
+$ sudo update-rc.d webiopi defaults
+
+Подключаемся к Raspberry Pi через терминальную программу Putty (логин – pi, пароль - raspberry) и открываем для редактирования конфигурационный файл config:
+
+sudo nano /etc/webiopi/config
+
+Для того, чтобы работал датчик DS18B20 необходимо в файл /boot/config.txt вставить строку
+
+dtoverlay=w1-gpio
+
+Если к GPIO4 подключено несколько датчиков DS18B20, то каждый из них должен иметь свое имя. Для определении имени переходим в каталог: 
+
+cd /sys/bus/w1/devices
+
+Распечатываем файлы в этом каталоге:
+ls
+28-00000272b04c  28-000002d9a4f5  w1_bus_master1
+
+Первые два имени определяют два датчика DS18B20. Заносим их в 
+
+/etc/webiopi/config
+
+в секцию  [DEVICES]:
+tmp0=DS18B20 slave:28-00000272b04c
+tmp1=DS18B20 slave:28-000002d9a4f5
+
+Изменение пароля Webiopi выполняется командой 
+
+$ sudo webiopi-passwd
+
+Для перегрузки webiopi после внесения изменений в конфигурационный файл, скипт на питоне, html файл, необходимо выполнить команду:
+
+sudo /etc/init.d/webiopi restart
+
+Сообщения об ошибках при запуске  Webiopi находятся в файле /var/log/webiopi.
+
+/var/log/webiopi

@@ -79,11 +79,11 @@ def loop():
    while cnt<60:
       # retrieve current datetime
       now = datetime.datetime.now()
-      if (now.hour >= HOUR_OFF and now.minute >= MIN_OFF):
-         if not (now.hour <= HOUR_ON and now.minute >= MIN_ON):
-            GPIO.digitalWrite(LIGHT,GPIO.LOW)
-         else:
-            GPIO.digitalWrite(LIGHT,GPIO.HIGH)
+      mOffSecond = HOUR_OFF * 60 * 60 + MIN_OFF * 60
+      mOnSecond  = HOUR_ON  * 60 * 60 + MIN_ON  * 60
+      mNumSecond = now.hour * 60 * 60 + now.minute * 60 + now.second
+      if mNumSecond >= mOffSecond and mNumSecond <= mOnSecond:
+         GPIO.digitalWrite(LIGHT,GPIO.LOW)
       else:
          GPIO.digitalWrite(LIGHT,GPIO.HIGH)
       #read temp 

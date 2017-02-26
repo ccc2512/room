@@ -9,10 +9,12 @@ GPIO = webiopi.GPIO
 
 LIGHT = 21 # GPIO pin for LIGHT
 
-HOUR_ON   = 15  # Turn Light ON at 13:00
-HOUR_OFF  = 19  # Turn Light OFF at 14:00
-MIN_ON    = 00
-MIN_OFF   = 26
+HOUR_OFF  = 8
+MIN_OFF   = 5
+
+HOUR_ON   = 18
+MIN_ON    = 35
+
 celsius_0 = 0,0
 cel_0     = 0,0
 num       = 1
@@ -21,14 +23,7 @@ num       = 1
 def setup():
    # set the GPIO used by the light to output
    GPIO.setFunction(LIGHT,GPIO.OUT)
-
-   # retrieve current datetime
-   #now = datetime.datetime.now()
    
-   # test if we are between ON time and turn the light ON
-   #if (((now.hour >= HOUR_ON) and (now.hour <= HOUR_OFF)) and ((now.minute >= MIN_ON) and (now.minute <= MIN_OFF))):
-   #   GPIO.digitalWrite(LIGHT,GPIO.HIGH)
-
 @webiopi.macro
 def getBMP085Press():
    global pressure_085
@@ -66,14 +61,11 @@ def fDate():
 
 @webiopi.macro
 def fLight():
-   now = datetime.datetime.now()
-
-   # toggle light ON all days at the correct time
-   if (((now.hour >= HOUR_ON) and (now.minute >= MIN_ON)) and ((now.hour <= HOUR_OFF) and (now.minute < MIN_OFF))):
-      onoff = "ON"
+   if (GPIO.digitalRead(LIGHT) == GPIO.HIGH):
+      mLight = "ON"
    else:
-      onoff = "OFF"
-   return onoff
+      mLight = "OFF"
+   return mLight
 
 def loop():
    global cel_0
@@ -87,11 +79,14 @@ def loop():
    while cnt<60:
       # retrieve current datetime
       now = datetime.datetime.now()
-      # toggle light ON all days at the correct time
-      if (((now.hour >= HOUR_ON) and (now.minute >= MIN_ON)) and ((now.hour <= HOUR_OFF) and (now.minute < MIN_OFF))):
-         GPIO.digitalWrite(LIGHT,GPIO.HIGH)
+      if (now.hour >= HOUR_OFF and now.minute >= MIN_OFF):
+         if not (now.hour <= HOUR_ON and now.minute >= MIN_ON):
+            GPIO.digitalWrite(LIGHT,GPIO.LOW)
+         else:
+            GPIO.digitalWrite(LIGHT,GPIO.HIGH)
       else:
-         GPIO.digitalWrite(LIGHT,GPIO.LOW)
+         GPIO.digitalWrite(LIGHT,GPIO.HIGH)
+      #read temp 
       oneTemp     = tmp0.getCelsius()
       oneTemp085  = tmp085.getCelsius()
       onePress085 = tmp085.getHectoPascal()
